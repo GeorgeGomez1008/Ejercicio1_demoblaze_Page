@@ -1,31 +1,37 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { webelements } from "../../support/ui/elementsWebPagDemoblaze.js"
+
+require('cypress-xpath')
+
 
 Given("that I am on the home page", () => {
   cy.visit('/');
 });
  
-When('agrego un producto {string} al carrito', (productName) => {
-  cy.get('.card-title').contains(productName).click();
-  cy.get('.btn.btn-success').click(); // Añadir al carrito
-  cy.get('.modal-footer .btn.btn-primary').click(); // Confirmar el añadido
+When("I add two products to the cart {string} {string}", (product1, product2) => {
+  cy.get('.card-title').contains(product1).click();
+  cy.get('.btn.btn-success').click();
+  cy.xpath(webelements.NAVLINKHOME).should('contain.text', 'Home').click();
+  cy.get('.card-title').contains(product2).click();
+  cy.get('.btn.btn-success').click();
 });
 
-When('visualizo el carrito', () => {
-  cy.get('#cartur').click();
-  cy.url().should('include', '/cart.html');
+When('I see the cart', () => {
+  cy.xpath(webelements.NAVLINKCART).should('contain.text', 'Cart').click();
+  cy.xpath(webelements.BUTTONPLACEORDER).should('contain.text', 'Place Order').click();
 });
 
-When('completo el formulario de compra', () => {
-  cy.get('#totalp').click(); // Hacer clic en el botón de compra
-  cy.get('#name').type('John Doe');
-  cy.get('#country').type('USA');
-  cy.get('#city').type('New York');
-  cy.get('#card').type('1234567890123456');
-  cy.get('#month').type('12');
-  cy.get('#year').type('2024');
-  cy.get('.btn.btn-primary').click(); // Finalizar la compra
+When('complete the purchase form {string} {string} {string} {string} {string} {string}', (name, country, city, card, month, year) => {
+  cy.xpath(webelements.MODALPLACEORDER).should('be.visible');
+  cy.xpath(webelements.INPUTNAME).type(name);
+  cy.get('#country').type(country);
+  cy.get('#city').type(city);
+  cy.get('#card').type(card);
+  cy.get('#month').type(month);
+  cy.get('#year').type(year);
+  cy.xpath(webelements.BUTTONPURCHASE).click();
 });
 
-Then('la compra debe ser exitosa', () => {
+Then('the purchase should be successful', () => {
   cy.get('.sweet-alert').should('contain', 'Thank you for your purchase!');
 });

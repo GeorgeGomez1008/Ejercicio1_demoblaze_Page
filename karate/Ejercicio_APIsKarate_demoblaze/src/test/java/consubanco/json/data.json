@@ -1,0 +1,7 @@
+{
+  "post" : { "id": 1, "name": "Pug_Luna", "status": "available" },
+  "id" : 1,
+  "name_pet" : "Pug_Luna",
+  "put" : { "id": 1, "name": "PugCarlino_Luna" }
+
+}
